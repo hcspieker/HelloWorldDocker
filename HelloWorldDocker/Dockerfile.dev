@@ -1,0 +1,7 @@
+FROM	mcr.microsoft.com/dotnet/sdk:10.0
+
+LABEL	author="Harald Spieker"
+
+WORKDIR	/app
+
+ENTRYPOINT ["/bin/bash", "-c", "dotnet restore && dotnet watch run  --urls \"http://*:50005\""]

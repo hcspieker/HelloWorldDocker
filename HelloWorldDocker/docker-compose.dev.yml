@@ -20,7 +20,7 @@ services:
     container_name: dev-HelloWorldDocker
     build:
       context: .
-      dockerfile: dev.Dockerfile
+      dockerfile: Dockerfile.dev
     volumes:
       - .:/app
     ports:

@@ -1,6 +1,6 @@
 services:   
   traefik:
-    image: traefik:v3.6
+    image: traefik:v3.6.7
     container_name: dev-traefik
     command:
       - "--api.insecure=true"
@@ -8,11 +8,14 @@ services:
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--api.dashboard=true"
     ports:
       - "8080:8080"  # Traefik dashboard
       - "80:80"      # HTTP traffic
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
     networks:
       - web-dev-network
 
@@ -21,19 +24,19 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
     volumes:
       - .:/app
-    ports:
-      - "50005"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`localhost`)"
+      - "traefik.http.routers.web.rule=Host(`web.localhost`)"
       - "traefik.http.routers.web.entrypoints=web"
-      - "traefik.http.services.web.loadbalancer.server.port=50005"
+      - "traefik.http.services.web.loadbalancer.server.port=80"
+    restart: unless-stopped
     networks:
       - web-dev-network
-    depends_on:
-      - traefik
 
 networks:
   web-dev-network:

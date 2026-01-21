@@ -1,7 +1,8 @@
-FROM	mcr.microsoft.com/dotnet/sdk:10.0
+FROM		mcr.microsoft.com/dotnet/sdk:10.0-alpine
 
-LABEL	author="Harald Spieker"
+WORKDIR		/app
 
-WORKDIR	/app
+COPY		*.csproj ./
+RUN			dotnet restore
 
-ENTRYPOINT ["/bin/bash", "-c", "dotnet restore && dotnet watch run  --urls \"http://*:50005\""]
+ENTRYPOINT	["dotnet", "watch", "run", "--non-interactive", "--no-launch-profile"]
